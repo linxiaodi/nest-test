@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Cat } from './cat.entity';
+import { CreateCatDto } from './dto/createCat.dto';
 
 @Injectable()
 export class CatService {
@@ -15,15 +16,16 @@ export class CatService {
    *
    * @param cat Cat 实体对象
    */
-  async createCat(cat: Cat): Promise<Cat> {
+  async createCat(cat: CreateCatDto): Promise<Cat> {
     /**
      * 创建新的实体实例，并将此对象的所有实体属性复制到新实体中。 请注意，它仅复制实体模型中存在的属性。
      */
     // this.catRepo.create(cat);
 
     // 插入数据时，删除 id，以避免请求体内传入 id
-    delete cat.id;
-    return this.catRepo.save(this.catRepo.create(cat));
+    const instance = new Cat();
+    Object.assign(instance, CreateCatDto)
+    return this.catRepo.save(instance);
 
     /**
      * 将给定实体插入数据库。与save方法不同，执行原始操作时不包括级联，关系和其他操作。
