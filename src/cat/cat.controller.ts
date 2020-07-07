@@ -13,7 +13,25 @@ export class CatController {
 
   @Post()
   async createCat(@Body() createCatDto: CreateCatDto) {
-    await this.catService.createCat(createCatDto)
-    return { ok: 1, message: '创建成功！' }
+    const res = await this.catService.createCat(createCatDto)
+    return { ok: 1, message: '创建成功！', data: res }
+  }
+
+  @Get(':id')
+  async getCat(@Param() id: number) {
+    const res = await this.catService.findOneCat(id);
+    return { ok: 1, data: res, message: '' };
+  }
+
+  @Delete(':id')
+  async deleteCat(@Param() id: number) {
+    const res = await this.catService.deleteCat(id);
+    return { ok: 1, data: res, message: '删除成功' };
+  }
+
+  @Post(':id')
+  async updateCat(@Param() id: number, @Body() cat: CreateCatDto) {
+    const res = await this.catService.updateCat(id, cat);
+    return { ok: 1, data: res, message: '更新成功' }
   }
 }

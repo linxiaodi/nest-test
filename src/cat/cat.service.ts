@@ -24,7 +24,7 @@ export class CatService {
 
     // 插入数据时，删除 id，以避免请求体内传入 id
     const instance = new Cat();
-    Object.assign(instance, CreateCatDto)
+    Object.assign(instance, cat);
     return this.catRepo.save(instance);
 
     /**
@@ -49,17 +49,17 @@ export class CatService {
    *
    * @param cat Cat 实体对象
    */
-  async updateCat(id: number, cat: Cat): Promise<void> {
+  async updateCat(id: number, cat: CreateCatDto): Promise<Cat> {
     const existCat = await this.findOneById(id);
+    const { nickname, species } = cat;
+    Object.assign(existCat, { nickname, species });
     // 当传入空数据时，避免覆盖原数据
-    existCat.nickname = cat && cat.nickname ? cat.nickname : existCat.nickname;
-    existCat.species = cat && cat.species ? cat.species : existCat.species;
-    this.catRepo.save(existCat);
+    return this.catRepo.save(existCat);
   }
 
   /**
    * 根据ID查询
-   *
+   *`
    * @param id ID
    */
   async findOneCat(id: number): Promise<Cat> {
